@@ -1,0 +1,122 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteConfig } from "../config/site";
+import { getWhatsAppUrl } from "../lib/utils";
+---
+
+<BaseLayout
+  title="Contacto"
+  description={`Escribe a ${siteConfig.authorName} por correo o WhatsApp.`}
+>
+  <div class="mx-auto max-w-2xl px-5 pb-24 pt-16 sm:px-8 sm:pt-20">
+    <p class="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+      Contacto
+    </p>
+    <h1 class="mt-2 font-display text-4xl text-[var(--text)] sm:text-5xl">
+      Hablemos
+    </h1>
+    <p class="mt-4 text-lg leading-relaxed text-[var(--text-soft)]">
+      Completa el formulario o escribe directamente por WhatsApp — respondo
+      personalmente cada mensaje.
+    </p>
+
+    <!--
+      ─────────────────────────────────────────────────────────
+      FORMULARIO DE CONTACTO
+      Por defecto, este formulario abre el cliente de correo del
+      visitante con los datos ya redactados (no requiere backend
+      ni servicios externos, funciona en cualquier hosting está­tico).
+
+      PARA CONECTARLO A UN SERVICIO DE FORMULARIOS (recomendado
+      en producción, ej. Formspree, Netlify Forms, Resend):
+      1. Reemplaza la función `handleSubmit` en el <script> de
+         abajo por un `fetch()` a tu endpoint.
+      2. No hace falta tocar el HTML del formulario.
+      ─────────────────────────────────────────────────────────
+    -->
+    <form id="contact-form" class="mt-10 space-y-5" novalidate>
+      <div>
+        <label for="nombre" class="mb-1.5 block text-sm font-medium text-[var(--text)]">
+          Nombre
+        </label>
+        <input
+          id="nombre"
+          name="nombre"
+          type="text"
+          required
+          class="w-full rounded-lg border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:outline-none"
+          placeholder="Tu nombre"
+        />
+      </div>
+      <div>
+        <label for="correo" class="mb-1.5 block text-sm font-medium text-[var(--text)]">
+          Correo
+        </label>
+        <input
+          id="correo"
+          name="correo"
+          type="email"
+          required
+          class="w-full rounded-lg border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:outline-none"
+          placeholder="tu@correo.com"
+        />
+      </div>
+      <div>
+        <label for="mensaje" class="mb-1.5 block text-sm font-medium text-[var(--text)]">
+          Mensaje
+        </label>
+        <textarea
+          id="mensaje"
+          name="mensaje"
+          required
+          rows="5"
+          class="w-full resize-none rounded-lg border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-[var(--text)] placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:outline-none"
+          placeholder="Cuéntame en qué puedo ayudarte…"
+        ></textarea>
+      </div>
+      <button
+        type="submit"
+        class="w-full rounded-full bg-[var(--accent)] px-6 py-3.5 font-body text-[15px] font-medium text-white transition hover:opacity-90 sm:w-auto"
+      >
+        Enviar
+      </button>
+      <p id="form-status" class="text-sm text-[var(--text-soft)]" role="status"></p>
+    </form>
+
+    <div class="mt-14 border-t border-[var(--line)] pt-10 text-center">
+      <p class="mb-4 text-sm text-[var(--text-soft)]">
+        ¿Prefieres algo más directo?
+      </p>
+      <a
+        href={getWhatsAppUrl()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-7 py-4 font-body text-base font-medium text-white transition hover:opacity-90"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="size-5 fill-white">
+          <path d="M16.02 3C9.4 3 4 8.38 4 15c0 2.34.66 4.53 1.8 6.4L4 29l7.79-1.75A11.94 11.94 0 0 0 16.02 27C22.65 27 28 21.62 28 15S22.65 3 16.02 3Zm0 21.9c-1.94 0-3.76-.53-5.32-1.46l-.38-.22-4.62 1.04 1.03-4.5-.25-.4A9.86 9.86 0 0 1 6.1 15c0-5.47 4.45-9.9 9.92-9.9 5.46 0 9.9 4.43 9.9 9.9s-4.44 9.9-9.9 9.9Z" />
+        </svg>
+        Escribir por WhatsApp
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ email: siteConfig.email }}>
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+    const nombre = data.get("nombre");
+    const correo = data.get("correo");
+    const mensaje = data.get("mensaje");
+
+    const subject = encodeURIComponent(`Consulta de ${nombre}`);
+    const body = encodeURIComponent(`${mensaje}\n\n— ${nombre} (${correo})`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    if (status) status.textContent = "Abriendo tu cliente de correo…";
+  });
+</script>

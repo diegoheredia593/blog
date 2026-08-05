@@ -1,0 +1,42 @@
+---
+// Recibe los encabezados extraídos automáticamente por Astro
+// (render(post) → { headings }). Solo se muestra si hay 2 o más
+// encabezados de nivel 2 — un artículo corto no necesita índice.
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length >= 2 && (
+    <nav
+      aria-label="Tabla de contenido"
+      class="mb-10 rounded-xl border border-[var(--line)] px-6 py-5"
+    >
+      <p class="mb-3 text-xs font-medium uppercase tracking-wider text-[var(--text-soft)]">
+        En este artículo
+      </p>
+      <ul class="space-y-2">
+        {items.map((h) => (
+          <li class:list={[h.depth === 3 ? "ml-4" : ""]}>
+            <a
+              href={`#${h.slug}`}
+              class="text-[15px] text-[var(--text)] underline decoration-[var(--line)] underline-offset-4 hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

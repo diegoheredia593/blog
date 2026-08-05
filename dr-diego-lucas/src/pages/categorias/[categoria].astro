@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArticuloCard from "../../components/ArticuloCard.astro";
+import { slugify } from "../../lib/utils";
+
+// ─────────────────────────────────────────────────────────────
+// Genera automáticamente una página por cada categoría que exista
+// entre los artículos publicados. No hace falta declarar las
+// categorías en ningún lugar: nacen y desaparecen solas según lo
+// que escribas en el frontmatter `category` de cada .md.
+// ─────────────────────────────────────────────────────────────
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const categories = [...new Set(posts.map((p) => p.data.category))];
+  return categories.map((category) => ({
+    params: { categoria: slugify(category) },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const allPosts = (await getCollection("posts", ({ data }) => !data.draft))
+  .filter((p) => p.data.category === category)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title={`Categoría: ${category}`}
+  description={`Artículos publicados en la categoría ${category}.`}
+>
+  <div class="mx-auto max-w-(--container-page) px-5 pb-24 pt-16 sm:px-8 sm:pt-20">
+    <p class="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+      Categoría
+    </p>
+    <h1 class="mt-2 font-display text-4xl text-[var(--text)] sm:text-5xl">
+      {category}
+    </h1>
+
+    <div class="mt-14 grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+      {allPosts.map((post) => <ArticuloCard post={post} />)}
+    </div>
+  </div>
+</BaseLayout>

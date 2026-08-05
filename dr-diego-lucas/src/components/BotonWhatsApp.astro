@@ -1,0 +1,50 @@
+---
+import { getWhatsAppUrl } from "../lib/utils";
+
+// Botón flotante de WhatsApp. El número y el mensaje se
+// configuran en un único lugar: src/config/site.ts.
+const href = getWhatsAppUrl();
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Escribir por WhatsApp"
+  class="group fixed bottom-6 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_6px_20px_rgba(0,0,0,0.18)] transition-transform duration-300 hover:scale-105 sm:bottom-8 sm:right-8"
+>
+  <span
+    class="absolute inset-0 rounded-full bg-[#25D366] opacity-60 [animation:whatsapp-ping_2.8s_cubic-bezier(0,0,0.2,1)_infinite]"
+  ></span>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 32 32"
+    class="relative size-7 fill-white"
+  >
+    <path
+      d="M16.02 3C9.4 3 4 8.38 4 15c0 2.34.66 4.53 1.8 6.4L4 29l7.79-1.75A11.94 11.94 0 0 0 16.02 27C22.65 27 28 21.62 28 15S22.65 3 16.02 3Zm0 21.9c-1.94 0-3.76-.53-5.32-1.46l-.38-.22-4.62 1.04 1.03-4.5-.25-.4A9.86 9.86 0 0 1 6.1 15c0-5.47 4.45-9.9 9.92-9.9 5.46 0 9.9 4.43 9.9 9.9s-4.44 9.9-9.9 9.9Zm5.44-7.42c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47a8.9 8.9 0 0 1-1.65-2.05c-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.47 0 1.46 1.06 2.87 1.21 3.07.15.2 2.09 3.2 5.07 4.48.7.3 1.26.49 1.68.62.71.23 1.35.2 1.86.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.29.17-1.42-.07-.13-.27-.2-.57-.35Z"
+    ></path>
+  </svg>
+</a>
+
+<style>
+  @keyframes whatsapp-ping {
+    0%,
+    70%,
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+    35% {
+      transform: scale(1.35);
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a > span {
+      animation: none;
+      display: none;
+    }
+  }
+</style>

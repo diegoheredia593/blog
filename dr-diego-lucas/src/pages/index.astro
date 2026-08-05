@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ArticulosDestacados from "../components/ArticulosDestacados.astro";
+import SobreAutorTeaser from "../components/SobreAutorTeaser.astro";
+import CTAConsulta from "../components/CTAConsulta.astro";
+import UltimosArticulos from "../components/UltimosArticulos.astro";
+import { siteConfig } from "../config/site";
+---
+
+<BaseLayout title={siteConfig.siteName} description={siteConfig.description}>
+  <Hero />
+  <ArticulosDestacados />
+  <SobreAutorTeaser />
+  <CTAConsulta />
+  <UltimosArticulos />
+</BaseLayout>

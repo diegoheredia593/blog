@@ -1,0 +1,45 @@
+---
+import { siteConfig } from "../config/site";
+
+// Texto breve de presentación en portada. La biografía completa
+// vive en la página /sobre-mi (src/pages/sobre-mi.astro).
+// La fotografía se lee directamente de /public (ver
+// siteConfig.images.authorPhoto en src/config/site.ts) — para
+// cambiarla basta con reemplazar ese archivo, sin tocar este
+// componente.
+const bioCorta =
+  "Médico e investigador. Escribo sobre salud, tecnología y las preguntas que las conectan — con la intención de que la ciencia sea más clara y más útil para quien la lee.";
+---
+
+<section class="border-y border-[var(--line)] bg-[var(--surface-dim)]">
+  <div class="mx-auto grid max-w-(--container-page) grid-cols-1 items-center gap-10 px-5 py-20 sm:px-8 sm:py-28 md:grid-cols-[220px_1fr] md:gap-14">
+    <img
+      src={siteConfig.images.authorPhoto}
+      alt={siteConfig.authorName}
+      width="220"
+      height="220"
+      loading="lazy"
+      class="size-40 rounded-full object-cover sm:size-52 md:size-[220px]"
+    />
+    <div>
+      <p class="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+        Sobre el autor
+      </p>
+      <h2 class="mt-3 font-display text-3xl text-[var(--text)] sm:text-4xl">
+        {siteConfig.authorName}
+      </h2>
+      <p class="mt-4 max-w-2xl text-[17px] leading-relaxed text-[var(--text-soft)]">
+        {bioCorta}
+      </p>
+      <a
+        href="/sobre-mi"
+        class="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--text)] hover:text-[var(--accent)]"
+      >
+        Conocer más
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="size-4">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

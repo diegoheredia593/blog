@@ -1,0 +1,71 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { formatDate, estimateReadingTime, toISODate } from "../lib/utils";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+  // "grande" se usa para el primer artículo destacado en portada.
+  size?: "normal" | "grande";
+}
+
+const { post, size = "normal" } = Astro.props;
+const { title, description, date, category, cover, coverAlt, readingTime } =
+  post.data;
+
+const minutos = readingTime ?? estimateReadingTime(post.body ?? "");
+---
+
+<a
+  href={`/articulos/${post.id}`}
+  class:list={[
+    "group block",
+    size === "grande" ? "sm:col-span-2" : "",
+  ]}
+>
+  <article>
+    {
+      cover && (
+        <div
+          class:list={[
+            "mb-5 overflow-hidden rounded-lg bg-[var(--surface-dim)]",
+            size === "grande" ? "aspect-[16/8]" : "aspect-[16/10]",
+          ]}
+        >
+          <Image
+            src={cover}
+            alt={coverAlt ?? title}
+            width={size === "grande" ? 1200 : 700}
+            height={size === "grande" ? 600 : 440}
+            class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
+      )
+    }
+
+    <div class="flex items-center gap-3 text-xs uppercase tracking-wide text-[var(--accent)]">
+      <span>{category}</span>
+      <span class="text-[var(--line)]">·</span>
+      <time datetime={toISODate(date)} class="text-[var(--text-soft)] normal-case tracking-normal">
+        {formatDate(date)}
+      </time>
+    </div>
+
+    <h3
+      class:list={[
+        "mt-3 font-display leading-tight text-[var(--text)] transition-colors group-hover:text-[var(--accent)]",
+        size === "grande" ? "text-3xl sm:text-4xl" : "text-2xl",
+      ]}
+    >
+      {title}
+    </h3>
+
+    <p class="mt-2.5 line-clamp-2 text-[15px] leading-relaxed text-[var(--text-soft)]">
+      {description}
+    </p>
+
+    <p class="mt-3 text-sm text-[var(--text-soft)]">
+      {minutos} min de lectura
+    </p>
+  </article>
+</a>

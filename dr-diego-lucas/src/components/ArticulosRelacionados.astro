@@ -1,0 +1,50 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import ArticuloCard from "./ArticuloCard.astro";
+
+interface Props {
+  currentPost: CollectionEntry<"posts">;
+}
+
+const { currentPost } = Astro.props;
+
+// ─────────────────────────────────────────────────────────────
+// Relacionados automáticos: prioriza artículos de la MISMA
+// categoría; si no hay suficientes, completa con los que
+// comparten al menos una etiqueta. No requiere que marques
+// manualmente qué artículos están relacionados entre sí.
+// ─────────────────────────────────────────────────────────────
+const allPosts = await getCollection(
+  "posts",
+  ({ data, id }) => !data.draft && id !== currentPost.id
+);
+
+const sameCategory = allPosts.filter(
+  (p) => p.data.category === currentPost.data.category
+);
+
+const sharingTag = allPosts.filter(
+  (p) =>
+    !sameCategory.includes(p) &&
+    p.data.tags.some((t) => currentPost.data.tags.includes(t))
+);
+
+const related = [...sameCategory, ...sharingTag]
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+{
+  related.length > 0 && (
+    <section class="border-t border-[var(--line)] py-16">
+      <h2 class="mb-8 font-display text-2xl text-[var(--text)] sm:text-3xl">
+        Artículos relacionados
+      </h2>
+      <div class="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-3">
+        {related.map((post) => (
+          <ArticuloCard post={post} />
+        ))}
+      </div>
+    </section>
+  )
+}

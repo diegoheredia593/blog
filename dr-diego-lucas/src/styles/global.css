@@ -1,0 +1,237 @@
+/* ═══════════════════════════════════════════════════════════════
+   ESTILOS GLOBALES Y TOKENS DE DISEÑO
+   ═══════════════════════════════════════════════════════════════
+   Este archivo es el corazón visual del sitio. Con Tailwind CSS v4
+   no existe tailwind.config.js: los tokens (colores, tipografías,
+   radios, etc.) se declaran aquí mismo con @theme, y Tailwind
+   genera automáticamente utilidades como `text-accent`,
+   `font-display`, `bg-paper`, etc.
+
+   CÓMO CAMBIAR LOS COLORES
+   Edita los valores dentro de @theme más abajo. `--color-accent`
+   es el único color de acento del sitio (azul oscuro editorial).
+
+   CÓMO CAMBIAR LAS TIPOGRAFÍAS
+   Cambia `--font-display` (títulos, Cormorant Garamond) o
+   `--font-body` (texto, Inter). Si usas otra tipografía, recuerda
+   importar sus archivos @fontsource más abajo.
+   ═══════════════════════════════════════════════════════════════ */
+
+@import "tailwindcss";
+
+/* Tipografías auto-hospedadas (sin llamadas externas a Google
+   Fonts: mejor rendimiento y privacidad). Pesos seleccionados con
+   cuidado para mantener la carga mínima. */
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/400-italic.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
+@theme {
+  /* ── Paleta: blanco, negro, grises suaves + un único acento ── */
+  --color-paper: #ffffff;
+  --color-paper-dim: #faf9f7;
+  --color-ink: #14171f;
+  --color-ink-soft: #4b5060;
+  --color-line: #e6e4df;
+  --color-accent: #1b2a4a; /* azul oscuro editorial */
+  --color-accent-soft: #2f4570;
+
+  /* ── Modo oscuro (activado con la clase .dark en <html>) ── */
+  --color-paper-dark: #101319;
+  --color-paper-dim-dark: #15181f;
+  --color-ink-dark: #ede9e2;
+  --color-ink-soft-dark: #a7abb8;
+  --color-line-dark: #262a33;
+  --color-accent-dark: #7f95c9;
+
+  /* ── Tipografía ── */
+  --font-display: "Cormorant Garamond", "Iowan Old Style", serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── Ritmo / contenedor de lectura ── */
+  --container-prose: 42rem;
+  --container-page: 76rem;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Variables que cambian entre modo claro y oscuro. Se usan en
+   utilidades como bg-[var(--surface)] a lo largo del sitio.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --surface: var(--color-paper);
+  --surface-dim: var(--color-paper-dim);
+  --text: var(--color-ink);
+  --text-soft: var(--color-ink-soft);
+  --line: var(--color-line);
+  --accent: var(--color-accent);
+  color-scheme: light;
+}
+
+html.dark {
+  --surface: var(--color-paper-dark);
+  --surface-dim: var(--color-paper-dim-dark);
+  --text: var(--color-ink-dark);
+  --text-soft: var(--color-ink-soft-dark);
+  --line: var(--color-line-dark);
+  --accent: var(--color-accent-dark);
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* Foco de teclado visible en todo el sitio — accesibilidad. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: var(--surface);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Tipografía del cuerpo de un artículo (contenido Markdown
+   renderizado). Se aplica con la clase `.prose-article` en
+   src/pages/articulos/[slug].astro.
+   ───────────────────────────────────────────────────────────── */
+@layer components {
+  .prose-article {
+    font-family: var(--font-body);
+    color: var(--text);
+    font-size: 1.125rem;
+    line-height: 1.8;
+  }
+
+  .prose-article > * + * {
+    margin-top: 1.5em;
+  }
+
+  .prose-article h2 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    margin-top: 2.5em;
+    margin-bottom: 0.6em;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-article h3 {
+    font-size: 1.35rem;
+    font-weight: 500;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-article p {
+    color: var(--text);
+  }
+
+  .prose-article a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose-article a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .prose-article blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25em;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--text-soft);
+  }
+
+  .prose-article ul,
+  .prose-article ol {
+    padding-left: 1.4em;
+  }
+
+  .prose-article li + li {
+    margin-top: 0.4em;
+  }
+
+  .prose-article ul {
+    list-style: disc;
+  }
+
+  .prose-article ol {
+    list-style: decimal;
+  }
+
+  .prose-article img {
+    border-radius: 0.25rem;
+  }
+
+  .prose-article pre {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+  }
+
+  .prose-article code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+  }
+
+  .prose-article :not(pre) > code {
+    background-color: var(--surface-dim);
+    padding: 0.15em 0.4em;
+    border-radius: 0.25rem;
+  }
+
+  .prose-article hr {
+    border-color: var(--line);
+    margin: 2.5em 0;
+  }
+}
+
+/* Respeta la preferencia del usuario por reducir el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

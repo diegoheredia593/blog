@@ -1,0 +1,38 @@
+---
+import { getBookingUrl } from "../lib/utils";
+
+// ─────────────────────────────────────────────────────────────
+// Este botón lee su destino desde getBookingUrl() (src/lib/utils.ts),
+// que a su vez depende de `booking.provider` en src/config/site.ts.
+// Hoy abre WhatsApp; el día que quieras usar Calendly, Google
+// Calendar, GoHighLevel o Microsoft Bookings, solo cambia esos dos
+// valores en site.ts — este componente no necesita editarse.
+// ─────────────────────────────────────────────────────────────
+const bookingUrl = getBookingUrl();
+
+// Texto editable de esta sección.
+const titulo = "Agenda una consulta";
+const texto =
+  "Si tienes una inquietud puntual o quieres conversar en profundidad sobre un tema, puedes reservar un espacio conmigo. Respondo personalmente cada solicitud.";
+---
+
+<section class="mx-auto max-w-(--container-page) px-5 py-20 sm:px-8 sm:py-28">
+  <div
+    class="rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-8 py-16 text-center sm:px-16 sm:py-20"
+  >
+    <h2 class="font-display text-3xl text-[var(--text)] sm:text-4xl">
+      {titulo}
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-[17px] leading-relaxed text-[var(--text-soft)]">
+      {texto}
+    </p>
+    <a
+      href={bookingUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-7 py-3.5 font-body text-[15px] font-medium text-white transition hover:opacity-90"
+    >
+      Agenda una consulta
+    </a>
+  </div>
+</section>

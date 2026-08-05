@@ -1,0 +1,20 @@
+---
+// ─────────────────────────────────────────────────────────────
+// Se incluye en el <head> del BaseLayout, ANTES de cualquier
+// contenido visible. Lee la preferencia guardada en localStorage
+// (o la del sistema operativo si no hay ninguna) y aplica la
+// clase `.dark` al <html> de inmediato, para que no haya un
+// parpadeo de claro→oscuro al cargar la página.
+// ─────────────────────────────────────────────────────────────
+---
+
+<script is:inline>
+  (function () {
+    const saved = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    const isDark = saved ? saved === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", isDark);
+  })();
+</script>

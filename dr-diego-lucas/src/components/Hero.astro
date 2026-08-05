@@ -1,0 +1,74 @@
+---
+import { siteConfig } from "../config/site";
+import { getBookingUrl } from "../lib/utils";
+
+// Todo el texto de esta sección es editable directamente aquí
+// abajo — son las dos únicas variables de contenido del Hero.
+const subtitle = siteConfig.description;
+const bookingUrl = getBookingUrl();
+---
+
+<section class="mx-auto max-w-(--container-page) px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
+  <div class="max-w-3xl">
+    <p
+      class="mb-6 font-body text-xs font-medium uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 [animation:fade-up_0.7s_ease_forwards]"
+    >
+      Ensayos &amp; investigación
+    </p>
+    <h1
+      class="font-display text-5xl leading-[1.05] tracking-tight text-[var(--text)] opacity-0 [animation:fade-up_0.7s_ease_0.08s_forwards] sm:text-6xl md:text-7xl"
+    >
+      {siteConfig.siteName}
+    </h1>
+    <p
+      class="mt-7 max-w-xl font-body text-lg leading-relaxed text-[var(--text-soft)] opacity-0 [animation:fade-up_0.7s_ease_0.16s_forwards] sm:text-xl"
+    >
+      {subtitle}
+    </p>
+
+    <div
+      class="mt-10 flex flex-wrap items-center gap-4 opacity-0 [animation:fade-up_0.7s_ease_0.24s_forwards]"
+    >
+      <a
+        href="/articulos"
+        class="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3.5 font-body text-[15px] font-medium text-white transition hover:opacity-90"
+      >
+        Leer artículos
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="size-4">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+      <a
+        href={bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-6 py-3.5 font-body text-[15px] font-medium text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      >
+        Agenda una consulta
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [style*="animation"],
+    h1,
+    p,
+    div {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+  }
+</style>

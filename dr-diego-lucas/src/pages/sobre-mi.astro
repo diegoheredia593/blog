@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteConfig } from "../config/site";
+import { getWhatsAppUrl, getBookingUrl } from "../lib/utils";
+
+// ─────────────────────────────────────────────────────────────
+// Todo el contenido de esta página (biografía, trayectoria, áreas
+// de interés, experiencia) es texto editable directamente aquí
+// abajo. No depende de ningún archivo Markdown.
+// ─────────────────────────────────────────────────────────────
+const experiencia = [
+  {
+    periodo: "2020 — Presente",
+    titulo: "Investigador independiente",
+    detalle:
+      "Escritura y divulgación sobre salud, tecnología y toma de decisiones, con foco en traducir evidencia compleja a lenguaje claro.",
+  },
+  {
+    periodo: "2015 — 2020",
+    titulo: "Práctica clínica",
+    detalle:
+      "Consulta médica enfocada en medicina preventiva y acompañamiento de pacientes en decisiones de salud a largo plazo.",
+  },
+  {
+    periodo: "2015",
+    titulo: "Formación médica",
+    detalle: "Título en Medicina, con estudios complementarios en investigación aplicada.",
+  },
+];
+
+const areas = [
+  "Medicina preventiva",
+  "Tecnología y salud",
+  "Toma de decisiones",
+  "Divulgación científica",
+  "Longevidad",
+];
+
+const bookingUrl = getBookingUrl();
+---
+
+<BaseLayout
+  title="Sobre mí"
+  description={`Biografía, trayectoria y áreas de interés de ${siteConfig.authorName}.`}
+>
+  <div class="mx-auto max-w-(--container-page) px-5 pb-24 pt-16 sm:px-8 sm:pt-20">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-[280px_1fr] md:gap-16">
+      <div>
+        <img
+          src={siteConfig.images.authorPhoto}
+          alt={siteConfig.authorName}
+          width="280"
+          height="280"
+          class="aspect-square w-full max-w-[220px] rounded-full object-cover md:max-w-none"
+        />
+
+        <div class="mt-8 hidden flex-col gap-3 md:flex">
+          <a
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            Agenda una consulta
+          </a>
+          <a
+            href={getWhatsAppUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            Escribir por WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+          Sobre mí
+        </p>
+        <h1 class="mt-2 font-display text-4xl text-[var(--text)] sm:text-5xl">
+          {siteConfig.authorName}
+        </h1>
+
+        <div class="mt-6 max-w-2xl space-y-5 text-[17px] leading-relaxed text-[var(--text-soft)]">
+          <p>
+            Soy médico e investigador. Mi trabajo combina la práctica clínica
+            con la escritura: creo que buena parte del conocimiento útil en
+            salud y tecnología nunca llega a quien más lo necesita, simplemente
+            porque está escrito de forma inaccesible.
+          </p>
+          <p>
+            Este espacio existe para cerrar esa distancia — artículos claros,
+            bien fundamentados, escritos para ayudar a tomar mejores
+            decisiones, no para impresionar.
+          </p>
+        </div>
+
+        <h2 class="mt-12 font-display text-2xl text-[var(--text)]">
+          Áreas de interés
+        </h2>
+        <div class="mt-4 flex flex-wrap gap-2">
+          {
+            areas.map((area) => (
+              <span class="rounded-full border border-[var(--line)] px-4 py-1.5 text-sm text-[var(--text-soft)]">
+                {area}
+              </span>
+            ))
+          }
+        </div>
+
+        <h2 class="mt-12 font-display text-2xl text-[var(--text)]">
+          Trayectoria
+        </h2>
+        <ol class="mt-6 space-y-8 border-l border-[var(--line)] pl-6">
+          {
+            experiencia.map((item) => (
+              <li class="relative">
+                <span class="absolute -left-[29px] top-1.5 size-2.5 rounded-full bg-[var(--accent)]" />
+                <p class="text-xs font-medium uppercase tracking-wide text-[var(--text-soft)]">
+                  {item.periodo}
+                </p>
+                <p class="mt-1 font-display text-xl text-[var(--text)]">
+                  {item.titulo}
+                </p>
+                <p class="mt-1 text-[15px] leading-relaxed text-[var(--text-soft)]">
+                  {item.detalle}
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="mt-14 flex flex-col gap-3 sm:flex-row md:hidden">
+          <a
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            Agenda una consulta
+          </a>
+          <a
+            href={getWhatsAppUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-5 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          >
+            Escribir por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

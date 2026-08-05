@@ -1,0 +1,106 @@
+---
+import { mainNav, siteConfig } from "../config/site";
+import { getWhatsAppUrl } from "../lib/utils";
+import ThemeToggle from "./ThemeToggle.astro";
+import Buscador from "./Buscador.astro";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  class="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur-md"
+>
+  <div
+    class="mx-auto flex max-w-(--container-page) items-center justify-between px-5 py-4 sm:px-8"
+  >
+    <a
+      href="/"
+      class="font-display text-xl font-medium tracking-tight text-[var(--text)] sm:text-2xl"
+    >
+      {siteConfig.siteName}
+    </a>
+
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Principal">
+      {
+        mainNav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              "font-body text-[15px] transition-colors hover:text-[var(--text)]",
+              currentPath === item.href
+                ? "text-[var(--text)]"
+                : "text-[var(--text-soft)]",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-1">
+      <Buscador />
+      <ThemeToggle />
+      <a
+        href={getWhatsAppUrl()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ml-2 hidden items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 font-body text-sm font-medium text-white transition hover:opacity-90 sm:inline-flex"
+      >
+        WhatsApp
+      </a>
+      <button
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        class="grid size-9 place-items-center rounded-full text-[var(--text)] md:hidden"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-5">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <nav
+    id="mobile-menu"
+    class="hidden flex-col gap-1 border-t border-[var(--line)] px-5 py-4 md:hidden"
+    aria-label="Menú móvil"
+  >
+    {
+      mainNav.map((item) => (
+        <a
+          href={item.href}
+          class="rounded-lg px-3 py-2.5 font-body text-[15px] text-[var(--text)] hover:bg-[var(--surface-dim)]"
+        >
+          {item.label}
+        </a>
+      ))
+    }
+    <a
+      href={getWhatsAppUrl()}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="mt-2 rounded-full bg-[var(--accent)] px-4 py-2.5 text-center font-body text-sm font-medium text-white"
+    >
+      Escribir por WhatsApp
+    </a>
+  </nav>
+</header>
+
+<script>
+  function init() {
+    const btn = document.getElementById("menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+    btn?.addEventListener("click", () => {
+      const isOpen = menu?.classList.contains("flex");
+      menu?.classList.toggle("hidden", isOpen);
+      menu?.classList.toggle("flex", !isOpen);
+      btn.setAttribute("aria-expanded", String(!isOpen));
+    });
+  }
+  init();
+  document.addEventListener("astro:after-swap", init);
+</script>

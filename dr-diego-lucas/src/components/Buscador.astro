@@ -1,0 +1,166 @@
+---
+// ─────────────────────────────────────────────────────────────
+// Buscador con resultados instantáneos. Se abre como un panel
+// modal (Cmd/Ctrl+K o clic en el ícono de lupa del header).
+//
+// El índice de búsqueda se genera automáticamente en /search.json
+// (ver src/pages/search.json.ts) a partir de TODOS los artículos
+// publicados — no hace falta mantenerlo a mano ni tocar este
+// componente al agregar artículos nuevos.
+// ─────────────────────────────────────────────────────────────
+---
+
+<button
+  id="search-open"
+  type="button"
+  aria-label="Buscar artículos"
+  class="grid size-9 place-items-center rounded-full text-[var(--text-soft)] transition hover:bg-[var(--surface-dim)] hover:text-[var(--text)]"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.6"
+    class="size-[18px]"
+  >
+    <circle cx="11" cy="11" r="7"></circle>
+    <path d="m21 21-4.35-4.35"></path>
+  </svg>
+</button>
+
+<div
+  id="search-overlay"
+  class="fixed inset-0 z-[60] hidden items-start justify-center bg-[var(--text)]/20 px-4 pt-[12vh] backdrop-blur-sm"
+>
+  <div
+    class="w-full max-w-xl rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-2xl"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Buscar artículos"
+  >
+    <div class="flex items-center gap-3 border-b border-[var(--line)] px-5 py-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        class="size-5 shrink-0 text-[var(--text-soft)]"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Buscar por título, contenido o categoría…"
+        autocomplete="off"
+        class="w-full bg-transparent font-body text-base text-[var(--text)] placeholder:text-[var(--text-soft)] focus:outline-none"
+      />
+      <kbd
+        class="hidden shrink-0 rounded border border-[var(--line)] px-1.5 py-0.5 text-xs text-[var(--text-soft)] sm:block"
+        >Esc</kbd
+      >
+    </div>
+    <ul
+      id="search-results"
+      class="max-h-[55vh] overflow-y-auto py-2"
+    >
+    </ul>
+    <p
+      id="search-empty"
+      class="hidden px-5 py-8 text-center text-sm text-[var(--text-soft)]"
+    >
+      No se encontraron artículos.
+    </p>
+  </div>
+</div>
+
+<script>
+  type SearchItem = {
+    title: string;
+    description: string;
+    category: string;
+    url: string;
+    date: string;
+  };
+
+  let index: SearchItem[] = [];
+  let loaded = false;
+
+  const overlay = document.getElementById("search-overlay")!;
+  const input = document.getElementById("search-input") as HTMLInputElement;
+  const results = document.getElementById("search-results")!;
+  const empty = document.getElementById("search-empty")!;
+  const openBtn = document.getElementById("search-open")!;
+
+  async function ensureIndex() {
+    if (loaded) return;
+    const res = await fetch("/search.json");
+    index = await res.json();
+    loaded = true;
+  }
+
+  function render(items: SearchItem[]) {
+    results.innerHTML = items
+      .slice(0, 8)
+      .map(
+        (item) => `
+        <li>
+          <a href="${item.url}" class="block px-5 py-3 hover:bg-[var(--surface-dim)]">
+            <p class="font-display text-lg leading-tight text-[var(--text)]">${item.title}</p>
+            <p class="mt-0.5 text-sm text-[var(--text-soft)] line-clamp-1">${item.description}</p>
+            <p class="mt-1 text-xs uppercase tracking-wide text-[var(--accent)]">${item.category}</p>
+          </a>
+        </li>`
+      )
+      .join("");
+    empty.classList.toggle("hidden", items.length > 0);
+  }
+
+  function search(query: string) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      render(index.slice(0, 8));
+      return;
+    }
+    const matches = index.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+    );
+    render(matches);
+  }
+
+  async function openSearch() {
+    overlay.classList.remove("hidden");
+    overlay.classList.add("flex");
+    document.body.style.overflow = "hidden";
+    await ensureIndex();
+    render(index.slice(0, 8));
+    input.value = "";
+    input.focus();
+  }
+
+  function closeSearch() {
+    overlay.classList.add("hidden");
+    overlay.classList.remove("flex");
+    document.body.style.overflow = "";
+  }
+
+  openBtn.addEventListener("click", openSearch);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeSearch();
+  });
+  input?.addEventListener("input", () => search(input.value));
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      openSearch();
+    }
+    if (e.key === "Escape") closeSearch();
+  });
+</script>

@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content";
+import { formatDate, toISODate } from "../lib/utils";
+import { siteConfig } from "../config/site";
+
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const sorted = allPosts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Los siguientes artículos después de los ya mostrados en
+// "Destacados", para no repetir contenido en la portada.
+const rest = sorted.slice(siteConfig.featuredCount, siteConfig.featuredCount + 5);
+---
+
+{
+  rest.length > 0 && (
+    <section class="mx-auto max-w-(--container-page) px-5 pb-24 sm:px-8 sm:pb-32">
+      <h2 class="mb-8 font-display text-3xl text-[var(--text)] sm:text-4xl">
+        Últimos artículos
+      </h2>
+
+      <ul class="divide-y divide-[var(--line)] border-t border-[var(--line)]">
+        {rest.map((post) => (
+          <li>
+            <a
+              href={`/articulos/${post.id}`}
+              class="group flex flex-col gap-1 py-6 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+            >
+              <div class="min-w-0">
+                <span class="mb-1 block text-xs uppercase tracking-wide text-[var(--accent)]">
+                  {post.data.category}
+                </span>
+                <span class="font-display text-xl text-[var(--text)] transition-colors group-hover:text-[var(--accent)] sm:text-2xl">
+                  {post.data.title}
+                </span>
+              </div>
+              <time
+                datetime={toISODate(post.data.date)}
+                class="shrink-0 text-sm text-[var(--text-soft)]"
+              >
+                {formatDate(post.data.date)}
+              </time>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-10 text-center">
+        <a
+          href="/articulos"
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-6 py-3 text-sm font-medium text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        >
+          Ver todos los artículos
+        </a>
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,145 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TablaContenido from "../../components/TablaContenido.astro";
+import CompartirBotones from "../../components/CompartirBotones.astro";
+import ArticulosRelacionados from "../../components/ArticulosRelacionados.astro";
+import CTAConsulta from "../../components/CTAConsulta.astro";
+import { formatDate, estimateReadingTime, toISODate, slugify } from "../../lib/utils";
+import { siteConfig } from "../../config/site";
+
+// ─────────────────────────────────────────────────────────────
+// Genera automáticamente una página por cada artículo publicado
+// en src/content/posts/*.md. Los borradores (draft: true) no
+// generan página en producción.
+// ─────────────────────────────────────────────────────────────
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) =>
+    import.meta.env.PROD ? !data.draft : true
+  );
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const {
+  title,
+  description,
+  date,
+  category,
+  cover,
+  coverAlt,
+  tags,
+  author,
+  references,
+} = post.data;
+
+const minutos = post.data.readingTime ?? estimateReadingTime(post.body ?? "");
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={date}
+  author={author ?? siteConfig.authorName}
+  image={cover?.src}
+>
+  <article class="mx-auto max-w-(--container-prose) px-5 pb-24 pt-16 sm:px-8 sm:pt-20">
+    <header class="mb-10">
+      <div class="flex items-center gap-3 text-xs uppercase tracking-wide text-[var(--accent)]">
+        <a href={`/categorias/${slugify(category)}`} class="hover:underline">
+          {category}
+        </a>
+        <span class="text-[var(--line)]">·</span>
+        <time datetime={toISODate(date)} class="text-[var(--text-soft)] normal-case tracking-normal">
+          {formatDate(date)}
+        </time>
+        <span class="text-[var(--line)]">·</span>
+        <span class="text-[var(--text-soft)] normal-case tracking-normal">
+          {minutos} min de lectura
+        </span>
+      </div>
+
+      <h1 class="mt-4 font-display text-4xl leading-[1.1] text-[var(--text)] sm:text-5xl">
+        {title}
+      </h1>
+
+      <p class="mt-4 text-lg leading-relaxed text-[var(--text-soft)]">
+        {description}
+      </p>
+
+      <p class="mt-6 text-sm text-[var(--text-soft)]">
+        Por <span class="text-[var(--text)]">{author ?? siteConfig.authorName}</span>
+      </p>
+    </header>
+
+    {
+      cover && (
+        <Image
+          src={cover}
+          alt={coverAlt ?? title}
+          width={1400}
+          height={800}
+          class="mb-12 w-full rounded-xl object-cover"
+        />
+      )
+    }
+
+    <TablaContenido headings={headings} />
+
+    <div class="prose-article">
+      <Content />
+    </div>
+
+    {
+      references && references.length > 0 && (
+        <section class="mt-14 border-t border-[var(--line)] pt-8">
+          <h2 class="font-display text-xl text-[var(--text)]">Referencias</h2>
+          <ol class="mt-4 space-y-2 text-sm text-[var(--text-soft)]">
+            {references.map((ref) => (
+              <li>
+                {ref.url ? (
+                  <a href={ref.url} target="_blank" rel="noopener noreferrer" class="text-[var(--accent)] hover:underline">
+                    {ref.label}
+                  </a>
+                ) : (
+                  ref.label
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {
+      tags.length > 0 && (
+        <div class="mt-10 flex flex-wrap gap-2 border-t border-[var(--line)] pt-8">
+          {tags.map((tag) => (
+            <span class="rounded-full bg-[var(--surface-dim)] px-3 py-1 text-xs text-[var(--text-soft)]">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="mt-8 flex items-center justify-between border-t border-[var(--line)] pt-8">
+      <CompartirBotones title={title} url={pageUrl} />
+    </div>
+  </article>
+
+  <div class="mx-auto max-w-(--container-page) px-5 sm:px-8">
+    <CTAConsulta />
+  </div>
+
+  <div class="mx-auto max-w-(--container-page) px-5 sm:px-8">
+    <ArticulosRelacionados currentPost={post} />
+  </div>
+</BaseLayout>
