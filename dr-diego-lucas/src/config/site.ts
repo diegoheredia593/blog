@@ -40,7 +40,7 @@ export const siteConfig = {
   // entero.
   // ─────────────────────────────────────────────────────────────
   whatsapp: {
-    number: "593987654321", // <-- reemplaza por el número real
+    number: "593985965489", // <-- reemplaza por el número real
     // Mensaje que aparece pre-escrito al abrir WhatsApp.
     defaultMessage:
       "Hola Dr. Diego Lucas, me gustaría agendar una consulta.",
