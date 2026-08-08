@@ -1,5 +1,5 @@
 ---
-title: "Lo que la inteligencia artificial todavía no puede hacer en medicina"
+title: "Meedicina Estetica"
 description: "Entre el entusiasmo y el escepticismo hay un espacio más interesante: entender exactamente dónde la IA ayuda hoy en salud, y dónde sigue dependiendo por completo del criterio humano."
 date: 2026-05-14
 category: "Tecnología"
@@ -15,9 +15,7 @@ references:
     url: "https://www.nature.com/nm/"
 ---
 
-Cada pocos meses aparece un titular anunciando que la inteligencia artificial "superó a los médicos" en algún diagnóstico. Y cada pocos meses, ese titular necesita más contexto del que recibe.
-
-No escribo esto para restar valor a los avances reales — los hay, y son significativos. Lo escribo porque la conversación pública sobre IA y medicina suele moverse entre dos extremos poco útiles: el entusiasmo que promete una revolución inmediata, y el escepticismo que descarta cualquier progreso. La realidad, como casi siempre, es más específica.
+Esto es una prueba tecnica. No tienen ningun otro proposito.
 
 ## Dónde la IA ya está ayudando de verdad
 
